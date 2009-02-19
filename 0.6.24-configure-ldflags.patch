@@ -1,0 +1,21 @@
+--- origsrc/avahi-0.6.24/common/acx_pthread.m4	2008-06-17 18:13:44.000000000 -0500
++++ src/avahi-0.6.24/common/acx_pthread.m4	2009-02-16 10:50:20.640625000 -0600
+@@ -260,7 +260,7 @@
+       # FIXME: -fPIC is required for -shared on many architectures,
+       # so we specify it here, but the right way would probably be to
+       # properly detect whether it is actually required.
+-      CFLAGS="-shared -fPIC -Wl,-z,defs $CFLAGS $PTHREAD_CFLAGS"
++      CFLAGS="-shared $CFLAGS $PTHREAD_CFLAGS"
+       LIBS="$PTHREAD_LIBS $LIBS"
+       CC="$PTHREAD_CC"
+ 
+--- origsrc/avahi-0.6.24/configure.ac	2008-12-12 14:55:32.000000000 -0600
++++ src/avahi-0.6.24/configure.ac	2009-02-16 10:48:22.484375000 -0600
+@@ -88,7 +88,6 @@
+     ssp_old_cflags="$CFLAGS"
+     ssp_old_ldflags="$LDFLAGS"
+     CFLAGS="$CFLAGS -Werror -fstack-protector-all -fPIC"
+-    LDFLAGS="$LDFLAGS -Wl,-z,defs"
+     cat confdefs.h > conftest.c
+     cat >>conftest.c <<_ACEOF
+ void test_broken_ssp(c)

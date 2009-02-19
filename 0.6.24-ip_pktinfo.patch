@@ -1,0 +1,22 @@
+Cygwin is missing in_pktinfo::ipi_spec_dst
+
+--- origsrc/avahi-0.6.24/avahi-core/socket.c	2008-06-17 18:13:44.000000000 -0500
++++ src/avahi-0.6.24/avahi-core/socket.c	2009-02-16 19:38:22.887469600 -0600
+@@ -477,7 +477,7 @@
+     struct sockaddr_in sa;
+     struct msghdr msg;
+     struct iovec io;
+-#ifdef IP_PKTINFO
++#if defined(IP_PKTINFO) && !defined(__CYGWIN__)
+     struct cmsghdr *cmsg;
+     size_t cmsg_data[( CMSG_SPACE(sizeof(struct in_pktinfo)) / sizeof(size_t)) + 1];
+ #elif !defined(IP_MULTICAST_IF) && defined(IP_SENDSRCADDR)
+@@ -508,7 +508,7 @@
+     msg.msg_control = NULL;
+     msg.msg_controllen = 0;
+ 
+-#ifdef IP_PKTINFO
++#if defined(IP_PKTINFO) && !defined(__CYGWIN__)
+     if (interface > 0 || src_address) {
+         struct in_pktinfo *pkti;
+ 

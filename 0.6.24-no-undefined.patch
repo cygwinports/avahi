@@ -1,0 +1,110 @@
+--- origsrc/avahi-0.6.24/avahi-client/Makefile.am	2008-06-23 19:09:22.000000000 -0500
++++ src/avahi-0.6.24/avahi-client/Makefile.am	2009-02-16 10:04:34.609375000 -0600
+@@ -55,7 +55,7 @@
+ 
+ libavahi_client_la_CFLAGS = $(AM_CFLAGS) $(DBUS_CFLAGS) -DDBUS_SYSTEM_BUS_DEFAULT_ADDRESS=\"$(DBUS_SYSTEM_BUS_DEFAULT_ADDRESS)\"
+ libavahi_client_la_LIBADD = $(AM_LDADD) $(DBUS_LIBS) ../avahi-common/libavahi-common.la
+-libavahi_client_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_CLIENT_VERSION_INFO)
++libavahi_client_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined -version-info $(LIBAVAHI_CLIENT_VERSION_INFO)
+ 
+ client_test_SOURCES = client-test.c
+ client_test_CFLAGS = $(AM_CFLAGS) 
+--- origsrc/avahi-0.6.24/avahi-common/Makefile.am	2008-12-12 14:33:35.000000000 -0600
++++ src/avahi-0.6.24/avahi-common/Makefile.am	2009-02-16 19:09:52.293719600 -0600
+@@ -71,8 +71,8 @@
+ 	i18n.c i18n.h
+ 
+ libavahi_common_la_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS) -DAVAHI_LOCALEDIR=\"$(avahilocaledir)\"
+-libavahi_common_la_LIBADD = $(AM_LDADD) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) $(LIBINTL)
+-libavahi_common_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_COMMON_VERSION_INFO)
++libavahi_common_la_LIBADD = $(AM_LDADD) $(PTHREAD_CFLAGS) $(PTHREAD_LIBS) $(LTLIBINTL)
++libavahi_common_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined -version-info $(LIBAVAHI_COMMON_VERSION_INFO)
+ 
+ strlst_test_SOURCES = \
+ 	strlst.c strlst.h \
+--- origsrc/avahi-0.6.24/avahi-compat-howl/Makefile.am	2008-06-23 19:09:22.000000000 -0500
++++ src/avahi-0.6.24/avahi-compat-howl/Makefile.am	2009-02-16 10:05:10.921875000 -0600
+@@ -83,7 +83,7 @@
+ 	text.c \
+ 	compat.c
+ libhowl_la_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS) -I $(srcdir)/include
+-libhowl_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_COMPAT_HOWL_VERSION_INFO) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la
++libhowl_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined -version-info $(LIBAVAHI_COMPAT_HOWL_VERSION_INFO) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la
+ 
+ address_test_SOURCES = \
+ 	$(HOWLHEADERS) \
+--- origsrc/avahi-0.6.24/avahi-compat-libdns_sd/Makefile.am	2008-06-23 19:09:22.000000000 -0500
++++ src/avahi-0.6.24/avahi-compat-libdns_sd/Makefile.am	2009-02-16 10:05:30.312500000 -0600
+@@ -42,7 +42,7 @@
+ 	unsupported.c \
+ 	warn.c warn.h
+ libdns_sd_la_CFLAGS = $(AM_CFLAGS) $(PTHREAD_CFLAGS)
+-libdns_sd_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la
++libdns_sd_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined -version-info $(LIBAVAHI_COMPAT_LIBDNS_SD_VERSION_INFO) $(PTHREAD_LIBS) $(PTHREAD_CFLAGS) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la
+ 
+ txt_test_SOURCES = \
+ 	dns_sd.h \
+--- origsrc/avahi-0.6.24/avahi-core/Makefile.am	2008-06-23 19:09:22.000000000 -0500
++++ src/avahi-0.6.24/avahi-core/Makefile.am	2009-02-16 10:05:40.578125000 -0600
+@@ -103,7 +103,7 @@
+ 
+ libavahi_core_la_CFLAGS = $(AM_CFLAGS)
+ libavahi_core_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la
+-libavahi_core_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_CORE_VERSION_INFO)
++libavahi_core_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined -version-info $(LIBAVAHI_CORE_VERSION_INFO)
+ 
+ prioq_test_SOURCES = \
+ 	prioq-test.c  \
+--- origsrc/avahi-0.6.24/avahi-glib/Makefile.am	2008-06-23 19:09:22.000000000 -0500
++++ src/avahi-0.6.24/avahi-glib/Makefile.am	2009-02-16 10:06:13.062500000 -0600
+@@ -44,7 +44,7 @@
+ 
+ libavahi_glib_la_CFLAGS = $(AM_CFLAGS) $(GLIB20_CFLAGS)
+ libavahi_glib_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(GLIB20_LIBS)
+-libavahi_glib_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_GLIB_VERSION_INFO)
++libavahi_glib_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined -version-info $(LIBAVAHI_GLIB_VERSION_INFO)
+ 
+ glib_watch_test_SOURCES = \
+ 	glib-watch.c glib-watch.h \
+--- origsrc/avahi-0.6.24/avahi-gobject/Makefile.am	2008-06-23 19:09:22.000000000 -0500
++++ src/avahi-0.6.24/avahi-gobject/Makefile.am	2009-02-16 10:06:26.703125000 -0600
+@@ -65,7 +65,7 @@
+ 
+ libavahi_gobject_la_CFLAGS = $(AM_CFLAGS) $(GOBJECT_CFLAGS)
+ libavahi_gobject_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la ../avahi-glib/libavahi-glib.la $(GOBJECT_LIBS)
+-libavahi_gobject_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(LIBAVAHI_GOBJECT_VERSION_INFO) -export-symbols-regex '^ga_'
++libavahi_gobject_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined -version-info $(LIBAVAHI_GOBJECT_VERSION_INFO) -export-symbols-regex '^ga_'
+ 
+ # correctly clean the generated source files
+ CLEANFILES = $(BUILT_SOURCES)
+--- origsrc/avahi-0.6.24/avahi-qt/Makefile.am	2008-06-23 19:09:22.000000000 -0500
++++ src/avahi-0.6.24/avahi-qt/Makefile.am	2009-02-16 10:07:07.250000000 -0600
+@@ -42,7 +42,7 @@
+ 
+ libavahi_qt3_la_CPPFLAGS = $(AM_CFLAGS) $(QT3_CFLAGS) $(VISIBILITY_HIDDEN_CFLAGS)
+ libavahi_qt3_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(QT3_LIBS)
+-libavahi_qt3_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -version-info $(LIBAVAHI_QT3_VERSION_INFO)
++libavahi_qt3_la_LDFLAGS = $(AM_LDFLAGS) -export-dynamic -no-undefined -version-info $(LIBAVAHI_QT3_VERSION_INFO)
+ endif
+ 
+ if HAVE_QT4
+@@ -64,7 +64,7 @@
+ 
+ libavahi_qt4_la_CPPFLAGS = $(AM_CFLAGS) $(QT4_CFLAGS) -DQT4 $(VISIBILITY_HIDDEN_CFLAGS)
+ libavahi_qt4_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la $(QT4_LIBS)
+-libavahi_qt4_la_LDFLAGS = $(AM_LDFLAGS) -version-info $(LIBAVAHI_QT4_VERSION_INFO)
++libavahi_qt4_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined -version-info $(LIBAVAHI_QT4_VERSION_INFO)
+ endif
+ 
+ CLEANFILES = $(BUILT_SOURCES)
+--- origsrc/avahi-0.6.24/avahi-ui/Makefile.am	2008-12-12 14:46:47.000000000 -0600
++++ src/avahi-0.6.24/avahi-ui/Makefile.am	2009-02-16 10:07:36.437500000 -0600
+@@ -46,7 +46,7 @@
+ 	avahi-ui.h avahi-ui.c
+ libavahi_ui_la_CFLAGS = $(AM_CFLAGS) $(GTK20_CFLAGS)
+ libavahi_ui_la_LIBADD = $(AM_LDADD) ../avahi-common/libavahi-common.la ../avahi-client/libavahi-client.la ../avahi-glib/libavahi-glib.la $(GTK20_LIBS)
+-libavahi_ui_la_LDFLAGS = $(AM_LDFLAGS)  -version-info $(LIBAVAHI_UI_VERSION_INFO)
++libavahi_ui_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined -version-info $(LIBAVAHI_UI_VERSION_INFO)
+ 
+ if HAVE_GDBM
+ libavahi_ui_la_SOURCES += ../avahi-utils/stdb.h ../avahi-utils/stdb.c
