@@ -1,0 +1,79 @@
+inherit python
+
+DESCRIPTION="DNS-SD/mDNS Zeroconf implementation"
+HOMEPAGE="http://avahi.org/"
+SRC_URI="http://avahi.org/download/${P}.tar.gz"
+
+PATCH_URI="
+	0.6.30-no-undefined.patch
+	0.6.24-configure-ldflags.patch
+	0.6.24-ip_pktinfo.patch
+	0.6.30-visibility.patch
+	0.6.30-sharp-dllmap.patch
+	0.6.30-csih.patch
+"
+
+PKG_NAMES="avahi avahi-bookmarks avahi-discover bssh libavahi-client3 libavahi-client-devel
+           libavahi-common3 libavahi-common-devel libavahi-core7 libavahi-core-devel
+           libavahi-glib1 libavahi-glib-devel libavahi-gobject0 libavahi-gobject-devel
+           libavahi-qt4_1 libavahi-qt4-devel libavahi-ui0  libavahi-ui-devel
+           libavahi-ui-gtk3_0 libavahi-ui-gtk3-devel libdns_sd1 libdns_sd-devel
+           libhowl0 libhowl-devel girepository-Avahi0.6 mono-avahi-sharp
+           mono-avahi-ui-sharp python-avahi"
+avahi_CONTENTS="--exclude=avahi-bookmarks* --exclude=avahi-discover*
+                --exclude=bs* --exclude=bvnc* --exclude=gir-1.0
+                etc/ usr/bin/avahi-* usr/lib/avahi/ usr/sbin/ usr/share/"
+avahi_bookmarks_CONTENTS="usr/bin/avahi-bookmarks usr/share/man/man1/avahi-bookmarks.*"
+avahi_discover_CONTENTS="usr/bin/avahi-discover ${PYTHON_SITELIB#/}/avahi_discover/
+                         usr/share/applications/avahi-discover.desktop usr/share/avahi/interfaces/
+                         usr/share/man/man1/avahi-discover.*"
+bssh_CONTENTS="usr/bin/b* usr/share/applications/b* usr/share/man/man1/b*"
+libavahi_client3_CONTENTS="usr/bin/cygavahi-client-3.dll"
+libavahi_client_devel_CONTENTS="usr/include/avahi-client/ usr/lib/libavahi-client.*
+                                usr/lib/pkgconfig/avahi-client.pc"
+libavahi_common3_CONTENTS="usr/bin/cygavahi-common-3.dll"
+libavahi_common_devel_CONTENTS="usr/include/avahi-common/ usr/lib/libavahi-common.*"
+libavahi_core7_CONTENTS="usr/bin/cygavahi-core-7.dll"
+libavahi_core_devel_CONTENTS="usr/include/avahi-core/ usr/lib/libavahi-core.*
+                              usr/lib/pkgconfig/avahi-core.pc"
+libavahi_glib1_CONTENTS="usr/bin/cygavahi-glib-1.dll"
+# both ui and ui-gtk3 use the same header
+libavahi_glib_devel_CONTENTS="usr/include/avahi-glib/ usr/include/avahi-ui/
+                              usr/lib/libavahi-glib.* usr/lib/pkgconfig/avahi-glib.pc"
+libavahi_gobject0_CONTENTS="usr/bin/cygavahi-gobject-0.dll"
+libavahi_gobject_devel_CONTENTS="usr/include/avahi-gobject/ usr/lib/libavahi-gobject.*
+                              usr/lib/pkgconfig/avahi-gobject.pc"
+libavahi_qt4_1_CONTENTS="usr/bin/cygavahi-qt4-1.dll"
+libavahi_qt4_devel_CONTENTS="usr/include/avahi-qt4/ usr/lib/libavahi-qt4.*
+                              usr/lib/pkgconfig/avahi-qt4.pc"
+libavahi_ui0_CONTENTS="usr/bin/cygavahi-ui-0.dll"
+libavahi_ui_devel_CONTENTS="usr/lib/libavahi-ui.* usr/lib/pkgconfig/avahi-ui.pc"
+libavahi_ui_gtk3_0_CONTENTS="usr/bin/cygavahi-ui-gtk3-0.dll"
+libavahi_ui_gtk3_devel_CONTENTS="usr/lib/libavahi-ui-gtk3.* usr/lib/pkgconfig/avahi-ui-gtk3.pc"
+libdns_sd1_CONTENTS="usr/bin/cygdns_sd-1.dll"
+libdns_sd_devel_CONTENTS="usr/include/avahi-compat-libdns_sd/ usr/lib/libdns_sd.*
+                          usr/lib/pkgconfig/avahi-compat-libdns_sd.pc"
+libhowl0_CONTENTS="usr/bin/cyghowl-0.dll"
+libhowl_devel_CONTENTS="usr/include/avahi-compat-howl/ usr/lib/libhowl.*
+                        usr/lib/pkgconfig/avahi-compat-howl.pc"
+girepository_Avahi0_6_CONTENTS="usr/*/gir*/Avahi*-0.6.*"
+mono_avahi_sharp_CONTENTS="usr/lib/mono/avahi-sharp/ usr/lib/mono/gac/avahi-sharp/
+                           usr/lib/monodoc/sources/avahi-sharp-* usr/lib/pkgconfig/avahi-sharp.pc"
+mono_avahi_ui_sharp_CONTENTS="usr/lib/mono/avahi-ui-sharp/ usr/lib/mono/gac/avahi-ui-sharp/
+                              usr/lib/monodoc/sources/avahi-ui-sharp-* usr/lib/pkgconfig/avahi-ui-sharp.pc"
+python_avahi_CONTENTS=${PYTHON_SITELIB#/}"/avahi/"
+PKG_IGNORE="usr/bin/avahi-discover-standalone.exe"
+
+DISTCLEANFILES="avahi-daemon/avahi-dbus.conf initscripts/cygwin/*-config"
+
+# autoipd: requires libpcap, several <net/*> headers
+CYGCONF_ARGS="
+	--with-avahi-user=SYSTEM
+	--with-avahi-group=Administrators
+	--with-avahi-priv-access-group=Administrators
+	--with-distro=cygwin
+	--enable-compat-howl
+	--enable-compat-libdns_sd
+	--disable-autoipd
+	--disable-qt3
+"

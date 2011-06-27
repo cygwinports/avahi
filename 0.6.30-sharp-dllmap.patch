@@ -1,0 +1,31 @@
+--- origsrc/avahi-0.6.30/avahi-ui-sharp/Makefile.am	2010-06-28 22:30:35.000000000 -0500
++++ src/avahi-0.6.30/avahi-ui-sharp/Makefile.am	2011-06-22 00:48:36.053187600 -0500
+@@ -35,7 +35,7 @@ $(ASSEMBLY): $(AVAHISOURCES)
+ 	$(AM_V_GEN)mcs -keyfile:$(top_srcdir)/avahi-sharp/avahi.snk -target:library -out:$@ -debug $(AVAHISOURCES) -pkg:gtk-sharp-2.0 -r:$(top_builddir)/avahi-sharp/avahi-sharp.dll -r:Mono.Posix
+ 
+ $(ASSEMBLY).config: $(ASSEMBLY).config.in
+-	$(AM_V_GEN)$(srcdir)/gencfg.sh $(top_builddir)/avahi-common/libavahi-common.la < $< > $@
++	$(AM_V_GEN)$(srcdir)/gencfg.sh $(top_builddir)/avahi-common/libavahi-common.la $(top_builddir)/avahi-ui/libavahi-ui.la < $< > $@
+ 
+ bssh.exe: $(srcdir)/bssh.cs $(ASSEMBLY)
+ 	$(AM_V_GEN)mcs -out:$@ $(srcdir)/bssh.cs -r:./avahi-ui-sharp.dll -r:../avahi-sharp/avahi-sharp.dll -pkg:gtk-sharp-2.0 -r:Mono.Posix
+--- origsrc/avahi-0.6.30/avahi-ui-sharp/avahi-ui-sharp.dll.config.in	2010-06-24 19:54:22.000000000 -0500
++++ src/avahi-0.6.30/avahi-ui-sharp/avahi-ui-sharp.dll.config.in	2011-06-22 00:47:19.211453900 -0500
+@@ -1,4 +1,4 @@
+ <configuration>
+-  <dllmap dll="avahi-ui" target="libavahi-ui.so.0"/>
++  <dllmap dll="avahi-ui" target="@UI_DLNAME@"/>
+   <dllmap dll="avahi-common" target="@COMMON_DLNAME@"/>
+ </configuration>
+--- origsrc/avahi-0.6.30/avahi-ui-sharp/gencfg.sh	2008-06-17 18:13:44.000000000 -0500
++++ src/avahi-0.6.30/avahi-ui-sharp/gencfg.sh	2011-06-22 00:48:08.191539000 -0500
+@@ -2,5 +2,8 @@
+ 
+ . $1
+ common_dlname=$dlname
++. $2
++ui_dlname=$dlname
+ 
+-exec sed -e "s,@COMMON_DLNAME\@,${common_dlname},g"
++exec sed -e "s,@COMMON_DLNAME\@,${common_dlname},g" \
++         -e "s,@UI_DLNAME\@,${ui_dlname},g"

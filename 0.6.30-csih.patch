@@ -1,0 +1,255 @@
+--- origsrc/avahi-0.6.30/configure.ac	2011-06-14 22:03:40.441973300 -0500
++++ src/avahi-0.6.30/configure.ac	2011-06-22 01:11:13.422650000 -0500
+@@ -249,7 +249,7 @@ AC_TRY_COMPILE([#include <netinet/in.h>]
+ #
+ # Detecting the linux distribution for specific things like init scripts.
+ #
+-AC_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the distribution to target: One of lfs, debian, gentoo, archlinux, fedora, mandriva, darwin, netbsd, freebsd, slackware or none]))
++AC_ARG_WITH(distro, AS_HELP_STRING([--with-distro=DISTRO],[Specify the distribution to target: One of lfs, debian, gentoo, archlinux, fedora, mandriva, darwin, netbsd, freebsd, slackware, cygwin or none]))
+ if test "z$with_distro" = "z"; then
+     if test "$cross_compiling" = yes; then
+         AC_MSG_WARN([Target distribution cannot be reliably detected when cross-compiling. You should specify it with --with-distro (see $0 --help for recognized distros)])
+@@ -262,6 +262,7 @@ if test "z$with_distro" = "z"; then
+         AC_CHECK_FILE(/etc/redhat-release,with_distro="fedora")
+         AC_CHECK_FILE(/etc/mandriva-release,with_distro="mandriva")
+         AC_CHECK_FILE(/etc/slackware-version,with_distro="slackware")
++        AC_CHECK_FILE(/usr/bin/cygwin1.dll,with_distro="cygwin")
+     fi
+     if test "z$with_distro" = "z"; then
+         with_distro=`uname -s`
+@@ -270,7 +271,7 @@ fi
+ with_distro=`echo ${with_distro} | tr '[[:upper:]]' '[[:lower:]]' `
+ 
+ case $with_distro in
+-    lfs|debian|gentoo|archlinux|suse|fedora|mandriva|darwin|freebsd|slackware|none)
++    lfs|debian|gentoo|archlinux|suse|fedora|mandriva|darwin|freebsd|slackware|cygwin|none)
+      ;;
+     netbsd)
+      AC_MSG_WARN([Your distribution (${with_distro}) is supported but no init script exist yet! (patches welcome)])
+@@ -294,6 +295,7 @@ AM_CONDITIONAL(TARGET_DARWIN, test x"$wi
+ AM_CONDITIONAL(TARGET_NETBSD, test x"$with_distro" = xnetbsd)
+ AM_CONDITIONAL(TARGET_FREEBSD, test x"$with_distro" = xfreebsd)
+ AM_CONDITIONAL(TARGET_SLACKWARE, test x"$with_distro" = xslackware)
++AM_CONDITIONAL(TARGET_CYGWIN, test x"$with_distro" = xcygwin)
+ 
+ test_gcc_flag() {
+     AC_LANG_CONFTEST([int main() {}])
+@@ -1107,6 +1109,7 @@ initscript/mandriva/Makefile
+ initscript/darwin/Makefile
+ initscript/freebsd/Makefile
+ initscript/slackware/Makefile
++initscript/cygwin/Makefile
+ avahi-dnsconfd/Makefile
+ avahi-utils/Makefile
+ avahi-python/Makefile
+--- origsrc/avahi-0.6.30/initscript/Makefile.am	2010-06-28 22:30:35.000000000 -0500
++++ src/avahi-0.6.30/initscript/Makefile.am	2011-06-22 01:08:19.452921600 -0500
+@@ -56,3 +56,7 @@ endif
+ if TARGET_SLACKWARE
+ SUBDIRS += slackware
+ endif
++
++if TARGET_CYGWIN
++SUBDIRS += cygwin
++endif
+--- origsrc/avahi-0.6.30/initscript/cygwin/Makefile.am	1969-12-31 18:00:00.000000000 -0600
++++ src/avahi-0.6.30/initscript/cygwin/Makefile.am	2011-06-22 01:20:00.649604300 -0500
+@@ -0,0 +1,29 @@
++# This file is part of avahi.
++#
++# avahi is free software; you can redistribute it and/or modify it
++# under the terms of the GNU Lesser General Public License as
++# published by the Free Software Foundation; either version 2 of the
++# License, or (at your option) any later version.
++#
++# avahi is distributed in the hope that it will be useful, but WITHOUT
++# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
++# or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public
++# License for more details.
++#
++# You should have received a copy of the GNU Lesser General Public
++# License along with avahi; if not, write to the Free Software
++# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
++# USA.
++
++EXTRA_DIST = avahi-daemon-config.in
++
++bin_SCRIPTS = avahi-daemon-config
++
++CLEANFILES = avahi-daemon-config
++
++avahi-daemon-config: avahi-daemon-config.in
++	sed -e "s,\@avahi_runtime_dir\@,$(avahi_runtime_dir)," \
++	    -e "s,\@prefix\@,$(prefix)," \
++	    -e "s,\@sysconfdir\@,$(sysconfdir)," \
++	    $< > $@
++	chmod +x $@
+--- origsrc/avahi-0.6.30/initscript/cygwin/avahi-daemon-config.in	1969-12-31 18:00:00.000000000 -0600
++++ src/avahi-0.6.30/initscript/cygwin/avahi-daemon-config.in	2011-06-22 01:14:44.115449400 -0500
+@@ -0,0 +1,166 @@
++#!/bin/sh
++#
++# avahi-daemon-config, Copyright 2011 Yaakov Selkowitz
++#
++# This file is part of the Cygwin port of avahi.
++
++# ======================================================================
++# Initialization
++# ======================================================================
++PROGNAME=$(basename $0)
++_tdir=$(dirname $0)
++PROGDIR=$(cd $_tdir && pwd)
++
++CSIH_SCRIPT=/usr/share/csih/cygwin-service-installation-helper.sh
++
++# Subdirectory where the new package is being installed
++PREFIX=@prefix@
++
++# Directory where the config files are stored
++SYSCONFDIR=@sysconfdir@/avahi
++LOGDIR=/var/log
++SOCKDIR=@avahi_runtime_dir@
++
++source ${CSIH_SCRIPT}
++
++# ======================================================================
++# Routine: install_service
++#   Install avahi-daemon as a service
++# ======================================================================
++install_service() {
++
++  if csih_is_nt
++  then
++
++    # Check if avahi-daemon is installed and remove on user request.
++    if cygrunsrv -Q avahi-daemon > /dev/null 2>&1
++    then
++      csih_warning "The avahi-daemon service is already installed."
++      echo
++      if csih_request "Do you want to reinstall it with different args?"
++      then
++        cygrunsrv -E avahi-daemon
++        cygrunsrv -R avahi-daemon
++      fi
++    fi
++
++    # Install avahi-daemon service if it is not already installed
++    if ! cygrunsrv -Q avahi-daemon > /dev/null 2>&1
++    then
++      echo
++      csih_warning "The following function requires administrator privileges!"
++      if csih_request "Do you want to install avahi-daemon as service?"
++      then
++        if cygrunsrv -I avahi-daemon -d "CYGWIN Avahi service" -p /usr/sbin/avahi-daemon -a "--no-rlimits"
++        then
++	  echo
++	  csih_inform "The avahi-daemon service has been installed under the LocalSystem"
++	  csih_inform "account (also known as SYSTEM). To start the service now, call"
++          csih_inform "\`net start avahi-daemon' or \`cygrunsrv -S avahi-daemon'. Otherwise,"
++          csih_inform "it will start automatically after the next reboot."
++	  echo
++	  csih_inform "Check ${SYSCONFDIR}/avahi-daemon.conf first, if it suits your needs."
++        fi
++      fi # user allowed us to install avahi-daemon
++    fi # avahi-daemon already installed
++  fi # csih_is_nt
++} # --- End of install_service --- #
++
++
++# ======================================================================
++# Main Entry Point
++# ======================================================================
++
++
++# Check how the script has been started.  If
++#   (1) it has been started by giving the full path and
++#       that path is /etc/postinstall, OR
++#   (2) Otherwise, if the environment variable
++#       CONFIG_AUTO_ANSWER_NO is set
++# then set auto_answer to "no".  This allows automatic
++# creation of the config files in /etc w/o overwriting
++# them if they already exist.  In both cases, color
++# escape sequences are suppressed, so as to prevent
++# cluttering setup's logfiles.
++if [ "$PROGDIR" = "/etc/postinstall" ]
++then
++  csih_auto_answer="no"
++  csih_disable_color
++fi
++if [ -n "${CONFIG_AUTO_ANSWER_NO}" ]
++then
++  csih_auto_answer="no"
++  csih_disable_color
++fi
++
++
++# ======================================================================
++# Parse options
++# ======================================================================
++while :
++do
++  case $# in
++  0)
++    break
++    ;;
++  esac
++
++  option=$1
++  shift
++
++  case "$option" in
++  -d | --debug )
++    set -x
++    csih_trace_on
++    ;;
++
++  -y | --yes )
++    csih_auto_answer=yes
++    ;;
++
++  -n | --no )
++    csih_auto_answer=no
++    ;;
++
++  *)
++    echo "usage: ${PROGNAME} [OPTION]..."
++    echo
++    echo "This script creates a basic avahi-daemon configuration."
++    echo
++    echo "Options:"
++    echo "    --debug  -d     Enable shell's debug output."
++    echo "    --yes    -y     Answer all questions with \"yes\" automatically."
++    echo "    --no     -n     Answer all questions with \"no\" automatically."
++    echo
++    exit 1
++    ;;
++
++  esac
++done
++
++# ======================================================================
++# Action!
++# ======================================================================
++
++# Check for ${SYSCONFDIR} directory
++csih_make_dir "${SYSCONFDIR}" "Cannot create global configuration files."
++chmod 775 "${SYSCONFDIR}"
++setfacl -m u:system:rwx "${SYSCONFDIR}"
++
++# Check for ${LOGDIR} directory
++csih_make_dir "${LOGDIR}" "Syslogging using avahi-daemon will not work."
++chmod 775 "${LOGDIR}"
++setfacl -m u:system:rwx "${LOGDIR}"
++
++# Check for ${SOCKDIR} directory
++csih_make_dir "${SOCKDIR}" "SOCKET files of running processes will not be created."
++chmod 775 "${SOCKDIR}"
++setfacl -m u:system:rwx "${SOCKDIR}"
++
++# maybe: csih_auto_answer=no will skip,
++# interactive user will get a chance to override
++install_service
++
++
++echo
++echo "Configuration finished. Have fun!"

@@ -1,0 +1,11 @@
+--- origsrc/avahi-0.6.30/common/gcc_visibility.m4	2008-06-23 19:09:22.000000000 -0500
++++ src/avahi-0.6.30/common/gcc_visibility.m4	2011-06-14 21:47:33.605221000 -0500
+@@ -10,7 +10,7 @@ AC_DEFUN([CHECK_VISIBILITY_HIDDEN], [
+ 
+   AC_MSG_CHECKING(for gcc $OPTION support)
+ 
+-  CFLAGS="$CFLAGS $OPTION"
++  CFLAGS="$CFLAGS -Werror $OPTION"
+ 
+   AC_TRY_COMPILE([
+       int default_vis __attribute__ ((visibility("default")));
