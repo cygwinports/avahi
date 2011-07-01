@@ -140,7 +140,7 @@
 +      csih_warning "The following function requires administrator privileges!"
 +      if csih_request "Do you want to install avahi-daemon as service?"
 +      then
-+        if cygrunsrv -I avahi-daemon -d "CYGWIN Avahi service" -p /usr/sbin/avahi-daemon -a "--no-rlimits"
++        if cygrunsrv -I avahi-daemon --disp "CYGWIN Avahi service" --path /usr/sbin/avahi-daemon --args "--no-drop-root" --dep "Bonjour Service" --dep messagebus
 +        then
 +	  echo
 +	  csih_inform "The avahi-daemon service has been installed under the LocalSystem"

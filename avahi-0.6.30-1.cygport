@@ -1,3 +1,5 @@
+mirror__opensolaris="http://src.opensolaris.org/source/raw/jds/spec-files/trunk"
+
 inherit python
 
 DESCRIPTION="DNS-SD/mDNS Zeroconf implementation"
@@ -5,6 +7,16 @@ HOMEPAGE="http://avahi.org/"
 SRC_URI="http://avahi.org/download/${P}.tar.gz"
 
 PATCH_URI="
+	mirror://_opensolaris/patches/avahi-02-browse-service.diff
+	mirror://_opensolaris/patches/avahi-03-entry.diff
+	mirror://_opensolaris/patches/avahi-04-internal.diff
+	mirror://_opensolaris/patches/avahi-05-resolve-service.diff
+	mirror://_opensolaris/patches/avahi-06-server.diff
+	mirror://_opensolaris/patches/avahi-07-daemon.diff
+	mirror://_opensolaris/patches/avahi-09-resolve-host-name.diff
+	mirror://_opensolaris/patches/avahi-10-resolve-address.diff
+	mirror://_opensolaris/patches/avahi-11-browse-domain.diff
+	mirror://_opensolaris/patches/avahi-12-browse.diff
 	0.6.30-no-undefined.patch
 	0.6.24-configure-ldflags.patch
 	0.6.24-ip_pktinfo.patch
@@ -17,9 +29,8 @@ PKG_NAMES="avahi avahi-bookmarks avahi-discover bssh libavahi-client3 libavahi-c
            libavahi-common3 libavahi-common-devel libavahi-core7 libavahi-core-devel
            libavahi-glib1 libavahi-glib-devel libavahi-gobject0 libavahi-gobject-devel
            libavahi-qt4_1 libavahi-qt4-devel libavahi-ui0  libavahi-ui-devel
-           libavahi-ui-gtk3_0 libavahi-ui-gtk3-devel libdns_sd1 libdns_sd-devel
-           libhowl0 libhowl-devel girepository-Avahi0.6 mono-avahi-sharp
-           mono-avahi-ui-sharp python-avahi"
+           libavahi-ui-gtk3_0 libavahi-ui-gtk3-devel girepository-Avahi0.6
+           mono-avahi-sharp mono-avahi-ui-sharp python-avahi"
 avahi_CONTENTS="--exclude=avahi-bookmarks* --exclude=avahi-discover*
                 --exclude=bs* --exclude=bvnc* --exclude=gir-1.0
                 etc/ usr/bin/avahi-* usr/lib/avahi/ usr/sbin/ usr/share/"
@@ -50,9 +61,9 @@ libavahi_ui0_CONTENTS="usr/bin/cygavahi-ui-0.dll"
 libavahi_ui_devel_CONTENTS="usr/lib/libavahi-ui.* usr/lib/pkgconfig/avahi-ui.pc"
 libavahi_ui_gtk3_0_CONTENTS="usr/bin/cygavahi-ui-gtk3-0.dll"
 libavahi_ui_gtk3_devel_CONTENTS="usr/lib/libavahi-ui-gtk3.* usr/lib/pkgconfig/avahi-ui-gtk3.pc"
-libdns_sd1_CONTENTS="usr/bin/cygdns_sd-1.dll"
-libdns_sd_devel_CONTENTS="usr/include/avahi-compat-libdns_sd/ usr/lib/libdns_sd.*
-                          usr/lib/pkgconfig/avahi-compat-libdns_sd.pc"
+#libdns_sd1_CONTENTS="usr/bin/cygdns_sd-1.dll"
+#libdns_sd_devel_CONTENTS="usr/include/avahi-compat-libdns_sd/ usr/lib/libdns_sd.*
+#                          usr/lib/pkgconfig/avahi-compat-libdns_sd.pc"
 libhowl0_CONTENTS="usr/bin/cyghowl-0.dll"
 libhowl_devel_CONTENTS="usr/include/avahi-compat-howl/ usr/lib/libhowl.*
                         usr/lib/pkgconfig/avahi-compat-howl.pc"
@@ -64,16 +75,17 @@ mono_avahi_ui_sharp_CONTENTS="usr/lib/mono/avahi-ui-sharp/ usr/lib/mono/gac/avah
 python_avahi_CONTENTS=${PYTHON_SITELIB#/}"/avahi/"
 PKG_IGNORE="usr/bin/avahi-discover-standalone.exe"
 
-DISTCLEANFILES="avahi-daemon/avahi-dbus.conf initscripts/cygwin/*-config"
+DISTCLEANFILES="avahi-daemon/avahi-dbus.conf initscript/cygwin/*"
 
+CPPFLAGS="-DHAVE_BONJOUR"
 # autoipd: requires libpcap, several <net/*> headers
 CYGCONF_ARGS="
 	--with-avahi-user=SYSTEM
 	--with-avahi-group=Administrators
 	--with-avahi-priv-access-group=Administrators
 	--with-distro=cygwin
-	--enable-compat-howl
-	--enable-compat-libdns_sd
+	--disable-compat-howl
+	--disable-compat-libdns_sd
 	--disable-autoipd
 	--disable-qt3
 "

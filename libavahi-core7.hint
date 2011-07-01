@@ -1,5 +1,5 @@
 category: Net
-requires: libavahi-common3 libgcc1 libssp0
+requires: libavahi-common3 libdns_sd1 libgcc1 libssp0
 external-source: avahi
 sdesc: "mDNS/DNS-SD/Zeroconf implementation (core runtime)"
 ldesc: "Avahi is a system which facilitates service discovery on a local 
