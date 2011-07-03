@@ -6,3 +6,8 @@ network via the mDNS/DNS-SD protocol suite. This enables you to plug
 your laptop or computer into a network and instantly be able to view 
 other people who you can chat with, find printers to print to or find 
 files being shared."
+message: avahi "Due to Cygwin limitations, this port of Avahi has been 
+patched to rely on a native Windows version of Bonjour's mDNSResponder 
+service. If you don't already have the 'Bonjour Service' installed (it 
+comes with iTunes and Safari, among others), then you can download it at 
+http://support.apple.com/kb/DL999"
