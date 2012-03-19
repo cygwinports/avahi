@@ -1,5 +1,5 @@
 category: Net
-requires: libavahi-core7 libavahi-common-devel
+requires: libavahi-core7 libavahi-common-devel libdns_sd-devel
 external-source: avahi
 sdesc: "mDNS/DNS-SD/Zeroconf implementation (core libdevel)"
 ldesc: "Avahi is a system which facilitates service discovery on a local 

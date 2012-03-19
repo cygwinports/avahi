@@ -74,7 +74,7 @@
 +
 +EXTRA_DIST = avahi-daemon-config.in
 +
-+bin_SCRIPTS = avahi-daemon-config
++sbin_SCRIPTS = avahi-daemon-config
 +
 +CLEANFILES = avahi-daemon-config
 +

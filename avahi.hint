@@ -1,6 +1,6 @@
 category: Net
-requires: csih dbus libavahi-client3 libavahi-common3 libavahi-core7 libdaemon0 libdbus1_3 libexpat1 libgdbm4 libintl8 libssp0
-sdesc: "mDNS/DNS-SD/Zeroconf implementation (daemon and CLI clients)"
+requires: csih dbus libavahi-common3 libavahi-core7 libdaemon0 libdbus1_3 libexpat1 libssp0
+sdesc: "mDNS/DNS-SD/Zeroconf implementation (daemon)"
 ldesc: "Avahi is a system which facilitates service discovery on a local 
 network via the mDNS/DNS-SD protocol suite. This enables you to plug 
 your laptop or computer into a network and instantly be able to view 

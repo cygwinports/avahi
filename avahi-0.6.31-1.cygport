@@ -25,20 +25,21 @@ PATCH_URI="
 	0.6.30-csih.patch
 "
 
-PKG_NAMES="avahi avahi-bookmarks avahi-discover bssh libavahi-client3 libavahi-client-devel
+PKG_NAMES="avahi avahi-tools avahi-ui-tools libavahi-client3 libavahi-client-devel
            libavahi-common3 libavahi-common-devel libavahi-core7 libavahi-core-devel
            libavahi-glib1 libavahi-glib-devel libavahi-gobject0 libavahi-gobject-devel
            libavahi-qt4_1 libavahi-qt4-devel libavahi-ui0  libavahi-ui-devel
            libavahi-ui-gtk3_0 libavahi-ui-gtk3-devel girepository-Avahi0.6
-           mono-avahi-sharp mono-avahi-ui-sharp python-avahi"
-avahi_CONTENTS="--exclude=avahi-bookmarks* --exclude=avahi-discover*
-                --exclude=bs* --exclude=bvnc* --exclude=gir-1.0
-                etc/ usr/bin/avahi-* usr/lib/avahi/ usr/sbin/ usr/share/"
-avahi_bookmarks_CONTENTS="usr/bin/avahi-bookmarks usr/share/man/man1/avahi-bookmarks.*"
-avahi_discover_CONTENTS="usr/bin/avahi-discover ${PYTHON_SITELIB#/}/avahi_discover/
-                         usr/share/applications/avahi-discover.desktop usr/share/avahi/interfaces/
-                         usr/share/man/man1/avahi-discover.*"
-bssh_CONTENTS="usr/bin/b* usr/share/applications/b* usr/share/man/man1/b*"
+           python-avahi"
+avahi_CONTENTS="--exclude=applications --exclude=gir-1.0 --exclude=*.ui --exclude=man1
+                etc/ usr/lib/avahi/ usr/sbin/ usr/share/"
+avahi_tools_CONTENTS="--exclude=avahi-bookmarks* --exclude=avahi-discover*
+                      --exclude=bs* --exclude=bvnc* usr/bin/avahi-*
+                      usr/share/man/man1/"
+avahi_ui_tools_CONTENTS="usr/bin/avahi-bookmarks usr/bin/avahi-discover usr/bin/b*
+                         ${PYTHON_SITELIB#/}/avahi_discover/ usr/share/applications/
+                         usr/share/avahi/interfaces/ usr/share/man/man1/avahi-bookmarks.*
+                         usr/share/man/man1/avahi-discover.* usr/share/man/man1/b*"
 libavahi_client3_CONTENTS="usr/bin/cygavahi-client-3.dll"
 libavahi_client_devel_CONTENTS="usr/include/avahi-client/ usr/lib/libavahi-client.*
                                 usr/lib/pkgconfig/avahi-client.pc"
@@ -87,5 +88,14 @@ CYGCONF_ARGS="
 	--disable-compat-howl
 	--disable-compat-libdns_sd
 	--disable-autoipd
+	--disable-mono
 	--disable-qt3
+	--disable-static
 "
+
+src_install() {
+	cd ${B}
+	cyginstall
+	make_etc_defaults /etc/avahi
+	python_optimize
+}

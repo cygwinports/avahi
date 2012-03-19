@@ -1,7 +1,7 @@
 category: Net
-requires: avahi python python-avahi python-dbus python-gobject python-twisted
+requires: avahi libavahi-client3 libavahi-common3 libgdbm4 libintl8 libssp0
 external-source: avahi
-sdesc: "mDNS/DNS-SD/Zeroconf implementation (discovery web service)"
+sdesc: "mDNS/DNS-SD/Zeroconf implementation (CLI tools)"
 ldesc: "Avahi is a system which facilitates service discovery on a local 
 network via the mDNS/DNS-SD protocol suite. This enables you to plug 
 your laptop or computer into a network and instantly be able to view 
