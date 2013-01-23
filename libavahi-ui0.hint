@@ -1,9 +1,0 @@
-category: Net
-requires: libavahi-client3 libavahi-common3 libavahi-glib1 libgdbm4 libglib2.0_0 libgtk2.0_0 libintl8 libssp0
-external-source: avahi
-sdesc: "mDNS/DNS-SD/Zeroconf implementation (GTK2 runtime)"
-ldesc: "Avahi is a system which facilitates service discovery on a local 
-network via the mDNS/DNS-SD protocol suite. This enables you to plug 
-your laptop or computer into a network and instantly be able to view 
-other people who you can chat with, find printers to print to or find 
-files being shared."

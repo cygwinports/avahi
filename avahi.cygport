@@ -1,11 +1,18 @@
-mirror__opensolaris="http://src.opensolaris.org/source/raw/jds/spec-files/trunk"
-
 inherit python
 
-DESCRIPTION="DNS-SD/mDNS Zeroconf implementation"
+NAME="avahi"
+VERSION=0.6.31
+RELEASE=2
+CATEGORY="Net"
+SUMMARY="mDNS/DNS_SD/Zeroconf implementation"
+DESCRIPTION="Avahi is a system which facilitates service discovery on a local
+network via the mDNS/DNS-SD protocol suite. This enables you to plug your
+laptop or computer into a network and instantly be able to view other people
+who you can chat with, find printers to print to or find files being shared."
 HOMEPAGE="http://avahi.org/"
 SRC_URI="http://avahi.org/download/${P}.tar.gz"
 
+mirror__opensolaris="http://src.opensolaris.org/source/raw/jds/spec-files/trunk"
 PATCH_URI="
 	mirror://_opensolaris/patches/avahi-02-browse-service.diff
 	mirror://_opensolaris/patches/avahi-03-entry.diff
@@ -23,6 +30,7 @@ PATCH_URI="
 	0.6.30-visibility.patch
 	0.6.30-sharp-dllmap.patch
 	0.6.30-csih.patch
+	0.6.31-introspection.patch
 "
 
 PKG_NAMES="avahi avahi-tools avahi-ui-tools libavahi-client3 libavahi-client-devel
@@ -31,48 +39,79 @@ PKG_NAMES="avahi avahi-tools avahi-ui-tools libavahi-client3 libavahi-client-dev
            libavahi-qt4_1 libavahi-qt4-devel libavahi-ui0  libavahi-ui-devel
            libavahi-ui-gtk3_0 libavahi-ui-gtk3-devel girepository-Avahi0.6
            python-avahi"
+avahi_SUMMARY="${SUMMARY} (daemon)"
+avahi_MESSAGE="Due to Cygwin limitations, this port of Avahi has been patched
+to rely on a native Windows version of Bonjour's mDNSResponder service.
+If you do not already have the 'Bonjour Service' installed (it comes with
+iTunes and Safari, among others), then you can download it at
+http://support.apple.com/kb/DL999"
+avahi_REQUIRES="csih dbus"
 avahi_CONTENTS="--exclude=applications --exclude=gir-1.0 --exclude=*.ui --exclude=man1
                 etc/ usr/lib/avahi/ usr/sbin/ usr/share/"
+avahi_tools_SUMMARY="${SUMMARY} (CLI tools)"
+avahi_tools_REQUIRES="avahi"
 avahi_tools_CONTENTS="--exclude=avahi-bookmarks* --exclude=avahi-discover*
                       --exclude=bs* --exclude=bvnc* usr/bin/avahi-*
                       usr/share/man/man1/"
+avahi_ui_tools_SUMMARY="${SUMMARY} (GUI tools)"
+avahi_ui_tools_REQUIRES="avahi openssh"
 avahi_ui_tools_CONTENTS="usr/bin/avahi-bookmarks usr/bin/avahi-discover usr/bin/b*
                          ${PYTHON_SITELIB#/}/avahi_discover/ usr/share/applications/
                          usr/share/avahi/interfaces/ usr/share/man/man1/avahi-bookmarks.*
                          usr/share/man/man1/avahi-discover.* usr/share/man/man1/b*"
+libavahi_client3_SUMMARY="${SUMMARY} (client runtime)"
 libavahi_client3_CONTENTS="usr/bin/cygavahi-client-3.dll"
+libavahi_client_devel_SUMMARY="${SUMMARY} (client libdevel)"
 libavahi_client_devel_CONTENTS="usr/include/avahi-client/ usr/lib/libavahi-client.*
                                 usr/lib/pkgconfig/avahi-client.pc"
+libavahi_common3_SUMMARY="${SUMMARY} (common runtime)"
 libavahi_common3_CONTENTS="usr/bin/cygavahi-common-3.dll"
+libavahi_common_devel_SUMMARY="${SUMMARY} (common libdevel)"
 libavahi_common_devel_CONTENTS="usr/include/avahi-common/ usr/lib/libavahi-common.*"
+libavahi_core7_SUMMARY="${SUMMARY} (core runtime)"
 libavahi_core7_CONTENTS="usr/bin/cygavahi-core-7.dll"
+libavahi_core_devel_SUMMARY="${SUMMARY} (core libdevel)"
 libavahi_core_devel_CONTENTS="usr/include/avahi-core/ usr/lib/libavahi-core.*
                               usr/lib/pkgconfig/avahi-core.pc"
+libavahi_glib1_SUMMARY="${SUMMARY} (GLib runtime)"
 libavahi_glib1_CONTENTS="usr/bin/cygavahi-glib-1.dll"
+libavahi_glib_devel_SUMMARY="${SUMMARY} (GLib libdevel)"
 # both ui and ui-gtk3 use the same header
 libavahi_glib_devel_CONTENTS="usr/include/avahi-glib/ usr/include/avahi-ui/
                               usr/lib/libavahi-glib.* usr/lib/pkgconfig/avahi-glib.pc"
+libavahi_gobject0_SUMMARY="${SUMMARY} (GObject runtime)"
 libavahi_gobject0_CONTENTS="usr/bin/cygavahi-gobject-0.dll"
+libavahi_gobject_devel_SUMMARY="${SUMMARY} (GObject libdevel)"
 libavahi_gobject_devel_CONTENTS="usr/include/avahi-gobject/ usr/lib/libavahi-gobject.*
                               usr/lib/pkgconfig/avahi-gobject.pc"
+libavahi_qt4_1_SUMMARY="${SUMMARY} (Qt4 runtime)"
 libavahi_qt4_1_CONTENTS="usr/bin/cygavahi-qt4-1.dll"
+libavahi_qt4_devel_SUMMARY="${SUMMARY} (Qt4 libdevel)"
 libavahi_qt4_devel_CONTENTS="usr/include/avahi-qt4/ usr/lib/libavahi-qt4.*
                               usr/lib/pkgconfig/avahi-qt4.pc"
+libavahi_ui0_SUMMARY="${SUMMARY} (GTK2 runtime)"
 libavahi_ui0_CONTENTS="usr/bin/cygavahi-ui-0.dll"
+libavahi_ui_devel_SUMMARY="${SUMMARY} (GTK2 libdevel)"
 libavahi_ui_devel_CONTENTS="usr/lib/libavahi-ui.* usr/lib/pkgconfig/avahi-ui.pc"
+libavahi_ui_gtk3_0_SUMMARY="${SUMMARY} (GTK3 runtime)"
 libavahi_ui_gtk3_0_CONTENTS="usr/bin/cygavahi-ui-gtk3-0.dll"
+libavahi_ui_gtk3_devel_SUMMARY="${SUMMARY} (GTK3 libdevel)"
 libavahi_ui_gtk3_devel_CONTENTS="usr/lib/libavahi-ui-gtk3.* usr/lib/pkgconfig/avahi-ui-gtk3.pc"
-#libdns_sd1_CONTENTS="usr/bin/cygdns_sd-1.dll"
-#libdns_sd_devel_CONTENTS="usr/include/avahi-compat-libdns_sd/ usr/lib/libdns_sd.*
-#                          usr/lib/pkgconfig/avahi-compat-libdns_sd.pc"
+libhowl0_SUMMARY="${SUMMARY} (Howl compatibility runtime)"
 libhowl0_CONTENTS="usr/bin/cyghowl-0.dll"
+libhowl_devel_SUMMARY="${SUMMARY} (Howl compatibility libdevel)"
 libhowl_devel_CONTENTS="usr/include/avahi-compat-howl/ usr/lib/libhowl.*
                         usr/lib/pkgconfig/avahi-compat-howl.pc"
+girepository_Avahi0_6_SUMMARY="${SUMMARY} (GObject Introspection bindings)"
 girepository_Avahi0_6_CONTENTS="usr/*/gir*/Avahi*-0.6.*"
+mono_avahi_sharp_SUMMARY="${SUMMARY} (Mono client bindings)"
 mono_avahi_sharp_CONTENTS="usr/lib/mono/avahi-sharp/ usr/lib/mono/gac/avahi-sharp/
                            usr/lib/monodoc/sources/avahi-sharp-* usr/lib/pkgconfig/avahi-sharp.pc"
+mono_avahi_ui_sharp_SUMMARY="${SUMMARY} (Mono UI bindings)"
 mono_avahi_ui_sharp_CONTENTS="usr/lib/mono/avahi-ui-sharp/ usr/lib/mono/gac/avahi-ui-sharp/
                               usr/lib/monodoc/sources/avahi-ui-sharp-* usr/lib/pkgconfig/avahi-ui-sharp.pc"
+python_avahi_CATEGORY="Python"
+python_avahi_SUMMARY="${SUMMARY} (Python bindings)"
 python_avahi_CONTENTS=${PYTHON_SITELIB#/}"/avahi/"
 PKG_IGNORE="usr/bin/avahi-discover-standalone.exe"
 
@@ -90,7 +129,6 @@ CYGCONF_ARGS="
 	--disable-autoipd
 	--disable-mono
 	--disable-qt3
-	--disable-static
 "
 
 src_install() {
@@ -99,3 +137,5 @@ src_install() {
 	make_etc_defaults /etc/avahi
 	python_optimize
 }
+
+KEEP_LA_FILES="none"
