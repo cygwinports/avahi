@@ -1,8 +1,8 @@
 inherit python
 
 NAME="avahi"
-VERSION=0.6.31
-RELEASE=2
+VERSION=0.6.32
+RELEASE=1
 CATEGORY="Net"
 SUMMARY="mDNS/DNS_SD/Zeroconf implementation"
 DESCRIPTION="Avahi is a system which facilitates service discovery on a local
@@ -10,7 +10,8 @@ network via the mDNS/DNS-SD protocol suite. This enables you to plug your
 laptop or computer into a network and instantly be able to view other people
 who you can chat with, find printers to print to or find files being shared."
 HOMEPAGE="http://avahi.org/"
-SRC_URI="http://avahi.org/download/${P}.tar.gz"
+#SRC_URI="http://avahi.org/download/${P}.tar.gz"
+SRC_URI="https://github.com/lathiat/avahi/releases/download/v${VERSION}/avahi-${VERSION}.tar.gz"
 
 PATCH_URI="
 	opensolaris/avahi-02-browse-service.diff
@@ -39,12 +40,7 @@ PKG_NAMES="avahi avahi-tools avahi-ui-tools libavahi-client3 libavahi-client-dev
            libavahi-ui-gtk3_0 libavahi-ui-gtk3-devel girepository-Avahi0.6
            python-avahi"
 avahi_SUMMARY="${SUMMARY} (daemon)"
-avahi_MESSAGE="Due to Cygwin limitations, this port of Avahi has been patched
-to rely on a native Windows version of Bonjour's mDNSResponder service.
-If you do not already have the 'Bonjour Service' installed (it comes with
-iTunes and Safari, among others), then you can download it at
-http://support.apple.com/kb/DL999"
-avahi_REQUIRES="csih dbus"
+avahi_REQUIRES="csih dbus mDNSResponder"
 avahi_CONTENTS="--exclude=applications --exclude=gir-1.0 --exclude=*.ui --exclude=man1
                 etc/ usr/lib/avahi/ usr/sbin/ usr/share/"
 avahi_tools_SUMMARY="${SUMMARY} (CLI tools)"
@@ -116,7 +112,7 @@ PKG_IGNORE="usr/bin/avahi-discover-standalone.exe"
 
 DISTCLEANFILES="avahi-daemon/avahi-dbus.conf initscript/cygwin/*"
 
-CPPFLAGS="-DHAVE_BONJOUR"
+CPPFLAGS="-DHAVE_BONJOUR -DFD_SETSIZE=1024"
 # autoipd: requires libpcap, several <net/*> headers
 CYGCONF_ARGS="
 	--with-avahi-user=SYSTEM
