@@ -12,18 +12,17 @@ who you can chat with, find printers to print to or find files being shared."
 HOMEPAGE="http://avahi.org/"
 SRC_URI="http://avahi.org/download/${P}.tar.gz"
 
-mirror__opensolaris="http://src.opensolaris.org/source/raw/jds/spec-files/trunk"
 PATCH_URI="
-	mirror://_opensolaris/patches/avahi-02-browse-service.diff
-	mirror://_opensolaris/patches/avahi-03-entry.diff
-	mirror://_opensolaris/patches/avahi-04-internal.diff
-	mirror://_opensolaris/patches/avahi-05-resolve-service.diff
-	mirror://_opensolaris/patches/avahi-06-server.diff
-	mirror://_opensolaris/patches/avahi-07-daemon.diff
-	mirror://_opensolaris/patches/avahi-09-resolve-host-name.diff
-	mirror://_opensolaris/patches/avahi-10-resolve-address.diff
-	mirror://_opensolaris/patches/avahi-11-browse-domain.diff
-	mirror://_opensolaris/patches/avahi-12-browse.diff
+	opensolaris/avahi-02-browse-service.diff
+	opensolaris/avahi-03-entry.diff
+	opensolaris/avahi-04-internal.diff
+	opensolaris/avahi-05-resolve-service.diff
+	opensolaris/avahi-06-server.diff
+	opensolaris/avahi-07-daemon.diff
+	opensolaris/avahi-09-resolve-host-name.diff
+	opensolaris/avahi-10-resolve-address.diff
+	opensolaris/avahi-11-browse-domain.diff
+	opensolaris/avahi-12-browse.diff
 	0.6.30-no-undefined.patch
 	0.6.24-configure-ldflags.patch
 	0.6.24-ip_pktinfo.patch
