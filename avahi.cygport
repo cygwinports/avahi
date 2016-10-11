@@ -2,7 +2,7 @@ inherit python
 
 NAME="avahi"
 VERSION=0.6.32
-RELEASE=1
+RELEASE=2
 CATEGORY="Net"
 SUMMARY="mDNS/DNS_SD/Zeroconf implementation"
 DESCRIPTION="Avahi is a system which facilitates service discovery on a local
