@@ -1,0 +1,11 @@
+--- origsrc/avahi-0.7/configure.ac	2018-04-15 20:43:38.162528100 -0500
++++ src/avahi-0.7/configure.ac	2018-04-15 21:28:58.634539600 -0500
+@@ -959,7 +959,7 @@ AC_DEFINE_UNQUOTED(AVAHI_AUTOIPD_GROUP,"
+ #
+ # Avahi runtime dir
+ #
+-avahi_runtime_dir="/run"
++avahi_runtime_dir="/var/run"
+ avahi_socket="${avahi_runtime_dir}/avahi-daemon/socket"
+ AC_SUBST(avahi_runtime_dir)
+ AC_SUBST(avahi_socket)

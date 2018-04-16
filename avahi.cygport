@@ -1,8 +1,8 @@
-inherit python
+inherit python2 python3
 
 NAME="avahi"
-VERSION=0.6.32
-RELEASE=2
+VERSION=0.7
+RELEASE=1
 CATEGORY="Net"
 SUMMARY="mDNS/DNS_SD/Zeroconf implementation"
 DESCRIPTION="Avahi is a system which facilitates service discovery on a local
@@ -10,7 +10,6 @@ network via the mDNS/DNS-SD protocol suite. This enables you to plug your
 laptop or computer into a network and instantly be able to view other people
 who you can chat with, find printers to print to or find files being shared."
 HOMEPAGE="http://avahi.org/"
-#SRC_URI="http://avahi.org/download/${P}.tar.gz"
 SRC_URI="https://github.com/lathiat/avahi/releases/download/v${VERSION}/avahi-${VERSION}.tar.gz"
 
 PATCH_URI="
@@ -31,6 +30,7 @@ PATCH_URI="
 	0.6.30-sharp-dllmap.patch
 	0.6.30-csih.patch
 	0.6.31-introspection.patch
+	0.7-rundir.patch
 "
 
 PKG_NAMES="avahi avahi-tools avahi-ui-tools libavahi-client3 libavahi-client-devel
@@ -38,7 +38,7 @@ PKG_NAMES="avahi avahi-tools avahi-ui-tools libavahi-client3 libavahi-client-dev
            libavahi-glib1 libavahi-glib-devel libavahi-gobject0 libavahi-gobject-devel
            libavahi-qt4_1 libavahi-qt4-devel libavahi-ui0  libavahi-ui-devel
            libavahi-ui-gtk3_0 libavahi-ui-gtk3-devel girepository-Avahi0.6
-           python-avahi"
+           python2-avahi python3-avahi"
 avahi_SUMMARY="${SUMMARY} (daemon)"
 avahi_REQUIRES="csih dbus mDNSResponder"
 avahi_CONTENTS="--exclude=applications --exclude=gir-1.0 --exclude=*.ui --exclude=man1
@@ -51,7 +51,7 @@ avahi_tools_CONTENTS="--exclude=avahi-bookmarks* --exclude=avahi-discover*
 avahi_ui_tools_SUMMARY="${SUMMARY} (GUI tools)"
 avahi_ui_tools_REQUIRES="avahi openssh"
 avahi_ui_tools_CONTENTS="usr/bin/avahi-bookmarks usr/bin/avahi-discover usr/bin/b*
-                         ${PYTHON_SITELIB#/}/avahi_discover/ usr/share/applications/
+                         ${PYTHON2_SITELIB#/}/avahi_discover/ usr/share/applications/
                          usr/share/avahi/interfaces/ usr/share/man/man1/avahi-bookmarks.*
                          usr/share/man/man1/avahi-discover.* usr/share/man/man1/b*"
 libavahi_client3_SUMMARY="${SUMMARY} (client runtime)"
@@ -105,9 +105,13 @@ mono_avahi_sharp_CONTENTS="usr/lib/mono/avahi-sharp/ usr/lib/mono/gac/avahi-shar
 mono_avahi_ui_sharp_SUMMARY="${SUMMARY} (Mono UI bindings)"
 mono_avahi_ui_sharp_CONTENTS="usr/lib/mono/avahi-ui-sharp/ usr/lib/mono/gac/avahi-ui-sharp/
                               usr/lib/monodoc/sources/avahi-ui-sharp-* usr/lib/pkgconfig/avahi-ui-sharp.pc"
-python_avahi_CATEGORY="Python"
-python_avahi_SUMMARY="${SUMMARY} (Python bindings)"
-python_avahi_CONTENTS=${PYTHON_SITELIB#/}"/avahi/"
+python2_avahi_CATEGORY="Python"
+python2_avahi_OBSOLETES="python-avahi"
+python2_avahi_SUMMARY="${SUMMARY} (Python bindings)"
+python2_avahi_CONTENTS=${PYTHON2_SITELIB#/}"/avahi/"
+python3_avahi_CATEGORY="Python"
+python3_avahi_SUMMARY="${SUMMARY} (Python bindings)"
+python3_avahi_CONTENTS=${PYTHON3_SITELIB#/}"/avahi/"
 PKG_IGNORE="usr/bin/avahi-discover-standalone.exe"
 
 DISTCLEANFILES="avahi-daemon/avahi-dbus.conf initscript/cygwin/*"
@@ -130,7 +134,8 @@ src_install() {
 	cd ${B}
 	cyginstall
 	make_etc_defaults /etc/avahi
-	python_optimize
-}
 
-KEEP_LA_FILES="none"
+	python3into avahi
+	dopython3 ${S}/avahi-python/avahi/*.py ${B}/avahi-python/avahi/*.py
+	python3_fix_shebang ${PYTHON3_SITELIB}/avahi/ServiceTypeDatabase.py
+}
